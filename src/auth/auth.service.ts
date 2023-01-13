@@ -8,7 +8,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthDto } from './dto/auth.dto';
 import * as argon2 from 'argon2';
-import { throwError } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -49,10 +48,12 @@ export class AuthService {
       throw new UnauthorizedException('Password is not valid');
     }
 
-    return this.jwt.sign({
+    const accessToken = this.jwt.sign({
       sub: user.id,
       email: user.email,
     });
+
+    return { accessToken };
   }
 
   async findUserById(id: number) {
